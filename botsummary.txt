@@ -1,0 +1,28 @@
+Owner commands:
+-creatitem
+	Bot: Item name
+	User: dummy
+	Bot: Create a new entry by typing entryname: entrytext or write done
+	User: test: hi
+	Bot: Create a new entry by typing entryname: entrytext or write done
+	User: done
+	Bot: chose a pic url
+	User: https://pic.com/random.png
+	Bot: created the new item
+	Backend: creates a new json file called like the item name to lowercase
+
+-createtext
+	Bot: Text name
+	User: test text
+	Bot: Text content
+	User: this is my text content
+	Bot: crated new text
+	Backend: creates new text file called after the text name to lowercase
+
+
+User commands:
+-[object name]
+	Backend: searches for the object name in the text files and the item files
+	Bot: Sends the embed from the file
+
+To delete or change texts or items you would need to delete or edit the files.
