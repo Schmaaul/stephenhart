@@ -2,10 +2,10 @@ const { getAllIds } = require("../savesystem");
 const { MessageAttachment } = require("discord.js");
 const main = (message) => {
   const ids = getAllIds().sort(function (a, b) {
-    if (a.firstname < b.firstname) {
+    if (a < b) {
       return -1;
     }
-    if (a.firstname > b.firstname) {
+    if (a > b) {
       return 1;
     }
     return 0;
