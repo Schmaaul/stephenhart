@@ -23,10 +23,10 @@ const saveindex = () => {
 };
 
 const getItemByID = (itemID) => {
-  const saveID = index[itemID];
-  if (!saveID) return undefined;
-  if (!fs.existsSync(savefolderpath + "/" + saveID + ".json")) return undefined;
-  return JSON.parse(fs.readFileSync(savefolderpath + "/" + saveID + ".json"));
+  const saveId = index[itemID];
+  if (!saveId) return undefined;
+  if (!fs.existsSync(savefolderpath + "/" + saveId + ".json")) return undefined;
+  return JSON.parse(fs.readFileSync(savefolderpath + "/" + saveId + ".json"));
 };
 
 const addItem = (item) => {
@@ -41,6 +41,25 @@ const addItem = (item) => {
   );
   return saveId;
 };
+const deleteItemById = (id) => {
+  const saveId = index[id];
+  if (!saveId) return { err: { msg: "Couldn't find the item" } };
+  delete index[id];
+  saveindex();
+  if (!fs.existsSync(savefolderpath + "/" + saveId + ".json")) return true;
+  fs.unlinkSync(savefolderpath + "/" + saveId + ".json");
+  return true;
+};
+const getAllIds = () => {
+  return Object.keys(index);
+};
+const findIdsBySearch = (string) => {
+  const ids = Object.keys(index);
+  return ids.filter((id) => id.includes(string.toLowerCase()));
+};
 
 exports.getItemByID = getItemByID;
 exports.addItem = addItem;
+exports.deleteItemById = deleteItemById;
+exports.getAllIds = getAllIds;
+exports.findIdsBySearch = findIdsBySearch;

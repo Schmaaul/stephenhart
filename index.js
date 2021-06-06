@@ -25,6 +25,9 @@ const createitem = require("./commands/createitem");
 const createtext = require("./commands/createtext");
 const convert = require("./commands/convert");
 const help = require("./commands/help");
+const deleteitem = require("./commands/deleteitem");
+const showall = require("./commands/showall");
+const search = require("./commands/search");
 
 const { getItemByID } = require("./savesystem");
 const getItemEmbed = require("./getItemEmbed");
@@ -42,8 +45,12 @@ client.on("message", (message) => {
   const command = message.content.toLowerCase().slice(1);
   if (command.startsWith("createitem")) return createitem(message);
   if (command.startsWith("createtext")) return createtext(message);
+  if (command.startsWith("deleteitem") || command.startsWith("deletetext"))
+    return deleteitem(message, command);
   if (command.startsWith("convert")) return convert(message, command);
   if (command.startsWith("help")) return help(message);
+  if (command.startsWith("showall")) return showall(message);
+  if (command.startsWith("search")) return search(message, command);
 
   const item = getItemByID(command);
   if (item) return message.channel.send(getItemEmbed(item));

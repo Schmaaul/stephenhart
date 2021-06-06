@@ -1,7 +1,8 @@
 const { MessageEmbed } = require("discord.js");
-const { adminRoleIds } = require("../config.json");
+const { adminRoleIds, prefix } = require("../config.json");
 const { isUri } = require("valid-url");
 const { addItem } = require("../savesystem");
+const openCollectors = {};
 /**
  *
  * @param {import("discord.js").Message} message
@@ -18,6 +19,8 @@ const main = async (message) => {
       `Your roles dont have the permissions to add a item`
     );
 
+  if (openCollectors[message.author.id])
+    openCollectors[message.author.id].stop("new");
   const embed = new MessageEmbed().setFooter("Item preview");
   const item = { entries: [] };
   const itemPreMsg = await message.channel.send(embed);
@@ -30,7 +33,10 @@ const main = async (message) => {
   const collector = message.channel.createMessageCollector(filter, {
     time: 180000,
   });
+  openCollectors[message.author.id] = collector;
+
   collector.on("collect", async (msg) => {
+    if (msg.content.startsWith(prefix)) return;
     collector.resetTimer();
     if (collecting == "name") {
       msgToDelete.delete();
@@ -85,7 +91,8 @@ const main = async (message) => {
     }
   });
   collector.on("end", (_, reason) => {
-    message.delete();
+    message.delete().catch(() => {});
+    delete openCollectors[message.author.id];
 
     if (reason === "done") {
       const id = saveItem(item);
@@ -95,8 +102,8 @@ const main = async (message) => {
         );
       message.channel.send(`Saved the item with the unique id ${id}`);
     } else {
-      itemPreMsg.delete();
-      if (msgToDelete.deletable) msgToDelete.delete();
+      itemPreMsg.delete().catch(() => {});
+      if (reason === "new") msgToDelete.delete().catch(() => {});
     }
   });
 };
