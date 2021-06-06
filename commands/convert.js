@@ -1,5 +1,4 @@
 const parser = require("fast-xml-parser");
-const fs = require("fs");
 const { MessageAttachment } = require("discord.js");
 /**
  *
@@ -22,7 +21,7 @@ const main = async (message, command) => {
   const filter = (msg) => msg.author.id == message.author.id;
   const msg = await waitForAnswer(filter, message.channel);
   msgToDelete.delete();
-  if (typeof msg != "object") return console.log("hulbi");
+  if (typeof msg != "object") return;
   const eventName = msg.content;
   msg.delete();
   // create file 1
@@ -64,7 +63,6 @@ const main = async (message, command) => {
       },
     };
   });
-  fs.writeFileSync("out.json", JSON.stringify(file2, null, 2));
 
   const file1Xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
