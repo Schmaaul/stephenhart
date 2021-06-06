@@ -43,7 +43,13 @@ const main = (message) => {
       .addField(
         "![text or item name]",
         "Shows you the embed saved for the given name"
-      );
+      )
+      .addField("!deleteitem [item name]", "deletes the item from the database")
+      .addField(
+        "!search [search string]",
+        "Used to search for items or text that include the search string in their name"
+      )
+      .addField("!showall", "sends a file with all item names");
   }
 
   message.channel.send(embed);
