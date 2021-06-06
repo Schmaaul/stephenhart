@@ -41,7 +41,7 @@ client.on("message", (message) => {
   const command = message.content.toLowerCase().slice(1);
   if (command.startsWith("createitem")) return createitem(message);
   if (command.startsWith("createtext")) return createtext(message);
-  if (command.startsWith("convert")) return convert(message);
+  if (command.startsWith("convert")) return convert(message, command);
 
   const item = getItemByID(command);
   if (item) return message.channel.send(getItemEmbed(item));
