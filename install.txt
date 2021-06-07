@@ -1,0 +1,8 @@
+1. Download node.js from https://nodejs.org
+2. Open a terminal in this folder and type "npm i"
+3. Open a terminal in this folder and type "npm start"
+4. Open "config.json" and edit the entries 
+    if you dont have a bot token google how to create one
+    if you dont know how to get the role id for a role google it
+5. To start the bot run "npm start" in this folder
+6. To stop the bot close your terminal or press ctrl/strg + c
