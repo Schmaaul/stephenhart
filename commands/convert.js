@@ -24,7 +24,9 @@ const main = async (message, command) => {
   if (typeof msg != "object") return;
   const eventName = msg.content;
   msg.delete();
-  // create file 1
+
+  try {
+    // create file 1
   const file1 = JSON.parse(JSON.stringify(inData));
   file1.events.event.forEach((event, index) => {
     event["@_name"] = `Static${eventName}_${index + 1}`;
@@ -63,7 +65,6 @@ const main = async (message, command) => {
       },
     };
   });
-
   const file1Xml =
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
     new parser.j2xParser({
@@ -86,6 +87,13 @@ const main = async (message, command) => {
   );
   message.channel.send(Attachment1);
   message.channel.send(Attachment2);
+}catch (err) {
+  message.channel.send("Could not convert your event xml probably because its not a valid event structure.")
+
+}
+  
+
+  
 };
 module.exports = main;
 /**
