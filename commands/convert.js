@@ -1,4 +1,5 @@
 const parser = require("fast-xml-parser");
+const fs = require("fs");
 const { MessageAttachment } = require("discord.js");
 /**
  *
@@ -27,73 +28,86 @@ const main = async (message, command) => {
 
   try {
     // create file 1
-  const file1 = JSON.parse(JSON.stringify(inData));
-  file1.events.event.forEach((event, index) => {
-    event["@_name"] = `Static${eventName}_${index + 1}`;
-  });
+    const file1 = JSON.parse(JSON.stringify(inData));
+    //console.log(JSON.stringify(file1, null, 2));
+    const newFile1 = { events: { event: [] } };
+    file1.events.event.forEach((event, index) => {
+      if (!event.pos.length) event.pos = [event.pos];
+      //console.log(event);
+      event.pos.forEach((pos) => {
+        const newEvent = {};
+        newEvent["@_name"] = `Static${eventName}_${index + 1}`;
+        newEvent.pos = { ...pos };
+        //console.log(newEvent);
+        newEvent.pos["@_a"] = newEvent.pos["@_a"] % 360;
+        if (newEvent.pos["@_a"] < 0) newEvent.pos["@_a"] += 360;
+        newFile1.events.event.push(newEvent);
+      });
+      //event["@_name"] = `Static${eventName}_${index + 1}`;
+    });
+    //console.log(JSON.stringify(newFile1, null, 2));
 
-  // create file 2
-  const file2 = JSON.parse(JSON.stringify(inData));
-  inData.events.event.forEach((event, index) => {
-    const oldName = event["@_name"];
-    file2.events.event[index] = {
-      ["@_name"]: `Static${eventName}_${index + 1}`,
-      nominal: 1,
-      min: 0,
-      max: 0,
-      lifetime: 300,
-      restock: 0,
-      saferadius: 0,
-      distanceradius: 0,
-      cleanupradius: 0,
-      flags: {
-        ["@_deletable"]: "0",
-        ["@_init_random"]: "0",
-        ["@_remove_damaged"]: "0",
-      },
-      position: "fixed",
-      limit: "child",
-      active: 1,
-      children: {
-        child: {
-          ["@_lootmax"]: "0",
-          ["@_lootmin"]: "0",
-          ["@_max"]: "2",
-          ["@_min"]: "1",
-          ["@_type"]: oldName,
+    // create file 2
+    const file2 = JSON.parse(JSON.stringify(inData));
+    inData.events.event.forEach((event, index) => {
+      const oldName = event["@_name"];
+      file2.events.event[index] = {
+        ["@_name"]: `Static${eventName}_${index + 1}`,
+        nominal: 1,
+        min: 0,
+        max: 0,
+        lifetime: 300,
+        restock: 0,
+        saferadius: 0,
+        distanceradius: 0,
+        cleanupradius: 0,
+        flags: {
+          ["@_deletable"]: "0",
+          ["@_init_random"]: "0",
+          ["@_remove_damaged"]: "0",
         },
-      },
-    };
-  });
-  const file1Xml =
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
-    new parser.j2xParser({
-      ignoreAttributes: false,
-      format: true,
-    }).parse(file1);
-  const file2Xml =
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
-    new parser.j2xParser({
-      ignoreAttributes: false,
-      format: true,
-    }).parse(file2);
-  const Attachment1 = new MessageAttachment(
-    Buffer.from(file1Xml, "utf8"),
-    "eventspawns.xml"
-  );
-  const Attachment2 = new MessageAttachment(
-    Buffer.from(file2Xml, "utf8"),
-    "events.xml"
-  );
-  message.channel.send(Attachment1);
-  message.channel.send(Attachment2);
-}catch (err) {
-  message.channel.send("Could not convert your event xml probably because its not a valid event structure.")
-
-}
-  
-
-  
+        position: "fixed",
+        limit: "child",
+        active: 1,
+        children: {
+          child: {
+            ["@_lootmax"]: "0",
+            ["@_lootmin"]: "0",
+            ["@_max"]: "2",
+            ["@_min"]: "1",
+            ["@_type"]: oldName,
+          },
+        },
+      };
+    });
+    const file1Xml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
+      new parser.j2xParser({
+        ignoreAttributes: false,
+        format: true,
+      }).parse(newFile1);
+    const file2Xml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
+      new parser.j2xParser({
+        ignoreAttributes: false,
+        format: true,
+      }).parse(file2);
+    const Attachment1 = new MessageAttachment(
+      Buffer.from(file1Xml, "utf8"),
+      "eventspawns.xml"
+    );
+    const Attachment2 = new MessageAttachment(
+      Buffer.from(file2Xml, "utf8"),
+      "events.xml"
+    );
+    message.channel.send(Attachment1);
+    message.channel.send(Attachment2);
+  } catch (err) {
+    message.channel.send(
+      "Could not convert your event xml probably because its not a valid event structure."
+    );
+    console.log(err);
+  }
 };
 module.exports = main;
 /**
