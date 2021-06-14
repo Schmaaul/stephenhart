@@ -18,7 +18,7 @@ const main = async (message, command) => {
     !message.member.roles.cache.some((role) => convertRoleIds.includes(role.id))
   )
     return message.channel.send(
-      `Your roles dont have the permissions to add a item`
+      `Your roles dont have the permissions to use the conversion tool.`
     );
 
   const input = strip(
