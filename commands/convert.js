@@ -40,57 +40,66 @@ const main = async (message, command) => {
 
   try {
     // create file 1
+    let index = 1;
     const file1 = JSON.parse(JSON.stringify(inData));
     //console.log(JSON.stringify(file1, null, 2));
     const newFile1 = { events: { event: [] } };
-    file1.events.event.forEach((event, index) => {
+    file1.events.event.forEach((event) => {
       if (!event.pos.length) event.pos = [event.pos];
       //console.log(event);
       event.pos.forEach((pos) => {
         const newEvent = {};
-        newEvent["@_name"] = `Static${eventName}_${index + 1}`;
+        newEvent["@_name"] = `Static${eventName}_${index}`;
         newEvent.pos = { ...pos };
         //console.log(newEvent);
         newEvent.pos["@_a"] = newEvent.pos["@_a"] % 360;
         if (newEvent.pos["@_a"] < 0) newEvent.pos["@_a"] += 360;
         newFile1.events.event.push(newEvent);
+        index++;
       });
       //event["@_name"] = `Static${eventName}_${index + 1}`;
     });
     //console.log(JSON.stringify(newFile1, null, 2));
 
+    index = 1;
     // create file 2
     const file2 = JSON.parse(JSON.stringify(inData));
-    inData.events.event.forEach((event, index) => {
+    const newFile2 = { events: { event: [] } };
+    inData.events.event.forEach((event) => {
       const oldName = event["@_name"];
-      file2.events.event[index] = {
-        ["@_name"]: `Static${eventName}_${index + 1}`,
-        nominal: 1,
-        min: 0,
-        max: 0,
-        lifetime: 300,
-        restock: 0,
-        saferadius: 0,
-        distanceradius: 0,
-        cleanupradius: 0,
-        flags: {
-          ["@_deletable"]: "0",
-          ["@_init_random"]: "0",
-          ["@_remove_damaged"]: "0",
-        },
-        position: "fixed",
-        limit: "child",
-        active: 1,
-        children: {
-          child: {
-            ["@_lootmax"]: "0",
-            ["@_lootmin"]: "0",
-            ["@_max"]: "2",
-            ["@_min"]: "1",
-            ["@_type"]: oldName,
+      if (!event.pos.length) event.pos = [event.pos];
+
+      event.pos.forEach((pos) => {
+        newFile2.events.event.push({
+          ["@_name"]: `Static${eventName}_${index}`,
+          nominal: 1,
+          min: 0,
+          max: 0,
+          lifetime: 300,
+          restock: 0,
+          saferadius: 0,
+          distanceradius: 0,
+          cleanupradius: 0,
+          flags: {
+            ["@_deletable"]: "0",
+            ["@_init_random"]: "0",
+            ["@_remove_damaged"]: "0",
           },
-        },
-      };
+          position: "fixed",
+          limit: "child",
+          active: 1,
+          children: {
+            child: {
+              ["@_lootmax"]: "0",
+              ["@_lootmin"]: "0",
+              ["@_max"]: "2",
+              ["@_min"]: "1",
+              ["@_type"]: oldName,
+            },
+          },
+        });
+        index++;
+      });
     });
     const file1Xml =
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
@@ -103,7 +112,7 @@ const main = async (message, command) => {
       new parser.j2xParser({
         ignoreAttributes: false,
         format: true,
-      }).parse(file2);
+      }).parse(newFile2);
     const Attachment1 = new MessageAttachment(
       Buffer.from(file1Xml, "utf8"),
       "eventspawns.xml"
