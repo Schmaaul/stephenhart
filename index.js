@@ -8,7 +8,10 @@ if (!fs.existsSync("./config.json")) {
         botToken: "Here goes the bot token",
         prefix: "!",
         adminRoleIds: [
-          "enter the id of the role that can add things to the bot.",
+          "enter the ids of the roles that can add things to the bot.",
+        ],
+        convertRoleIds: [
+          "enter the ids of the roles that can use the convert command",
         ],
       },
       null,

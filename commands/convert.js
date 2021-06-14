@@ -1,12 +1,24 @@
 const parser = require("fast-xml-parser");
 const fs = require("fs");
 const { MessageAttachment } = require("discord.js");
+const { convertRoleIds } = require("../config.json");
 /**
  *
  * @param {import("discord.js").Message} message
  * @param {string} command
  */
 const main = async (message, command) => {
+  if (message.channel.type != "text")
+    return message.channel.send(
+      "This command can only be used in text channels on discord servers"
+    );
+  if (
+    !message.member.roles.cache.some((role) => convertRoleIds.includes(role.id))
+  )
+    return message.channel.send(
+      `Your roles dont have the permissions to add a item`
+    );
+
   const inXml = command.split(" ").slice(1).join(" ");
   const valid = parser.validate(inXml);
   if (valid.err) {
