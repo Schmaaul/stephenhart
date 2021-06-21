@@ -20,7 +20,8 @@ const main = async (message, command) => {
     return message.channel.send(
       `Your roles dont have the permissions to add a item`
     );
-
+  const attachments = message.attachments.array()[0];
+  console.log(attachments);
   const input = strip(
     message.content.split("").slice(`${prefix}convert`.length).join("")
   );
