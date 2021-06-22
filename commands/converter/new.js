@@ -104,6 +104,7 @@ const main = async (input, message) => {
     new parser.j2xParser({
       ignoreAttributes: false,
       format: true,
+      supressEmptyNode: true,
     }).parse(file1);
 
   // parse file 2
@@ -112,6 +113,7 @@ const main = async (input, message) => {
     new parser.j2xParser({
       ignoreAttributes: false,
       format: true,
+      supressEmptyNode: true,
     }).parse(file2);
   // send files
   const Attachment1 = new MessageAttachment(

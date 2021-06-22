@@ -90,12 +90,14 @@ const convert = async (inXml, message) => {
       new parser.j2xParser({
         ignoreAttributes: false,
         format: true,
+        supressEmptyNode: true,
       }).parse(newFile1);
     const file2Xml =
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
       new parser.j2xParser({
         ignoreAttributes: false,
         format: true,
+        supressEmptyNode: true,
       }).parse(newFile2);
     const Attachment1 = new MessageAttachment(
       Buffer.from(file1Xml, "utf8"),
